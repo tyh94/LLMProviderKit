@@ -7,21 +7,24 @@
 
 import Foundation
 
-public struct LLMUsageConfiguration : Sendable {
+public struct LLMUsageConfiguration: Sendable {
     /// Максимум запросов за период
-    let total: Int
+    public let total: Int
     /// Период сброса
-    let period: LLMUsagePeriod
+    public let period: LLMUsagePeriod
     /// Ключ в UserDefaults
-    let storageKey: String
+    public let storageKey: String
+    public let canUpgrade: Bool
     
     public init(
         total: Int,
         period: LLMUsagePeriod,
-        storageKey: String
+        storageKey: String,
+        canUpgrade: Bool
     ) {
         self.total = total
         self.period = period
         self.storageKey = storageKey
+        self.canUpgrade = canUpgrade
     }
 }

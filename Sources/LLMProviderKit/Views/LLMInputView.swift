@@ -29,6 +29,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
     private let placeholder: String
     private let resultType: Result.Type
     private let usageLimit: LLMUsageLimit?
+    private let onUpgradeTap: (() -> Void)?
     private let preview: (Result) -> Preview
     private let onConfirm: (Result) -> Void
 
@@ -38,16 +39,18 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
         placeholder: String? = nil,
         resultType: Result.Type,
         usageLimit: LLMUsageLimit? = nil,
+        onUpgradeTap: (() -> Void)? = nil,
         @ViewBuilder preview: @escaping (Result) -> Preview,
         onConfirm: @escaping (Result) -> Void
     ) {
-        self.clients      = clients
+        self.clients = clients
         self.systemPrompt = systemPrompt
-        self.placeholder  = placeholder ?? String(localized: "llm.input.placeholder", bundle: .module)
-        self.resultType   = resultType
-        self.usageLimit   = usageLimit
-        self.preview      = preview
-        self.onConfirm    = onConfirm
+        self.placeholder = placeholder ?? String(localized: "llm.input.placeholder", bundle: .module)
+        self.resultType = resultType
+        self.usageLimit = usageLimit
+        self.onUpgradeTap = onUpgradeTap
+        self.preview = preview
+        self.onConfirm = onConfirm
     }
 
     /// Удобный init для одного клиента (пикер не показывается)
@@ -194,6 +197,19 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
                     )
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                }
+                
+                if !limit.hasRemaining && limit.upgradeAvailable {
+                    Button {
+                        onUpgradeTap?()
+                    } label: {
+                        HStack {
+                            Image(systemName: "crown.fill")
+                            Text("llm.more.usage")
+                        }
+                    }
+                    .buttonStyle(.glassProminent)
+                    .tint(.yellow)
                 }
             }
             .padding(.vertical, 4)
@@ -439,7 +455,12 @@ private struct _MockProvider: LLMProvider {
             ],
             systemPrompt: "Parse and return JSON",
             resultType: _PreviewResult.self,
-            usageLimit: LLMUsageLimit(used: 4, total: 10, resetDate: Date().addingTimeInterval(86400)),
+            usageLimit: LLMUsageLimit(
+                used: 10,
+                total: 10,
+                resetDate: Date().addingTimeInterval(86400),
+                upgradeAvailable: true
+            ),
             preview: { result in
                 Text(result.title)
             },

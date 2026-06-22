@@ -61,7 +61,8 @@ public final class LLMUsageService {
         currentLimit = LLMUsageLimit(
             used: state.used,
             total: configuration.total,
-            resetDate: state.resetDate
+            resetDate: state.resetDate,
+            upgradeAvailable: configuration.canUpgrade
         )
     }
 

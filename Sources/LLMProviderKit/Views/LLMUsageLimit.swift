@@ -15,11 +15,19 @@ public struct LLMUsageLimit: Sendable {
     public let total: Int
     /// Дата обновления лимита (опционально)
     public let resetDate: Date?
+    /// Есть ли способ получить больше запросов
+    public let upgradeAvailable: Bool
     
-    public init(used: Int, total: Int, resetDate: Date? = nil) {
+    public init(
+        used: Int,
+        total: Int,
+        resetDate: Date? = nil,
+        upgradeAvailable: Bool = false
+    ) {
         self.used = used
         self.total = total
         self.resetDate = resetDate
+        self.upgradeAvailable = upgradeAvailable
     }
     
     /// Осталось запросов

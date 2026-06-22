@@ -14,6 +14,7 @@ public struct LLMInputViewManaged<Result: Decodable & Sendable, Preview: View>: 
     public let placeholder: String
     public let resultType: Result.Type
     public let usageLimit: LLMUsageLimit?
+    public let onUpgradeTap: (() -> Void)?
     public let preview: (Result) -> Preview
     public let onConfirm: (Result) -> Void
 
@@ -24,6 +25,7 @@ public struct LLMInputViewManaged<Result: Decodable & Sendable, Preview: View>: 
         placeholder: String? = nil,
         resultType: Result.Type,
         usageLimit: LLMUsageLimit? = nil,
+        onUpgradeTap: (() -> Void)? = nil,
         @ViewBuilder preview: @escaping (Result) -> Preview,
         onConfirm: @escaping (Result) -> Void
     ) {
@@ -31,6 +33,7 @@ public struct LLMInputViewManaged<Result: Decodable & Sendable, Preview: View>: 
         self.placeholder = placeholder ?? String(localized: "llm.input.placeholder", bundle: .module)
         self.resultType = resultType
         self.usageLimit = usageLimit
+        self.onUpgradeTap = onUpgradeTap
         self.preview = preview
         self.onConfirm = onConfirm
     }
@@ -46,6 +49,7 @@ public struct LLMInputViewManaged<Result: Decodable & Sendable, Preview: View>: 
                 placeholder: placeholder,
                 resultType: resultType,
                 usageLimit: usageLimit,
+                onUpgradeTap: onUpgradeTap,
                 preview: preview,
                 onConfirm: onConfirm
             )
