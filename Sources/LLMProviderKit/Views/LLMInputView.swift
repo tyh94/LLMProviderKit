@@ -205,7 +205,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
                     } label: {
                         HStack {
                             Image(systemName: "crown.fill")
-                            Text("llm.more.usage")
+                            Text("llm.more.usage", bundle: .module)
                         }
                     }
                     .buttonStyle(.glassProminent)
