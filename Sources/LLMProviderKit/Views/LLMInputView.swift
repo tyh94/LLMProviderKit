@@ -31,6 +31,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
     private let usageLimit: LLMUsageLimit?
     private let onUpgradeTap: (() -> Void)?
     private let preview: (Result) -> Preview
+    private let onGetResult: ((Result) -> Void)?
     private let onConfirm: (Result) -> Void
 
     public init(
@@ -41,6 +42,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
         usageLimit: LLMUsageLimit? = nil,
         onUpgradeTap: (() -> Void)? = nil,
         @ViewBuilder preview: @escaping (Result) -> Preview,
+        onGetResult: ((Result) -> Void)?,
         onConfirm: @escaping (Result) -> Void
     ) {
         self.clients = clients
@@ -50,6 +52,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
         self.usageLimit = usageLimit
         self.onUpgradeTap = onUpgradeTap
         self.preview = preview
+        self.onGetResult = onGetResult
         self.onConfirm = onConfirm
     }
 
@@ -61,6 +64,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
         resultType: Result.Type,
         usageLimit: LLMUsageLimit? = nil,
         @ViewBuilder preview: @escaping (Result) -> Preview,
+        onGetResult: ((Result) -> Void)?,
         onConfirm: @escaping (Result) -> Void
     ) {
         self.init(
@@ -70,6 +74,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
             resultType: resultType,
             usageLimit: usageLimit,
             preview: preview,
+            onGetResult: onGetResult,
             onConfirm: onConfirm
         )
     }
@@ -395,6 +400,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
                     as: resultType
                 )
                 state = .result(result)
+                onGetResult?(result)
             } catch {
                 state = .error(error.localizedDescription)
             }
@@ -464,6 +470,7 @@ private struct _MockProvider: LLMProvider {
             preview: { result in
                 Text(result.title)
             },
+            onGetResult: nil,
             onConfirm: { _ in }
         )
         .navigationTitle("Import")

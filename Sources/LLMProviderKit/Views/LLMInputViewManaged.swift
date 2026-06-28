@@ -16,6 +16,7 @@ public struct LLMInputViewManaged<Result: Decodable & Sendable, Preview: View>: 
     public let usageLimit: LLMUsageLimit?
     public let onUpgradeTap: (() -> Void)?
     public let preview: (Result) -> Preview
+    public let onGetResult: ((Result) -> Void)?
     public let onConfirm: (Result) -> Void
 
     @State private var showSetup = false
@@ -27,6 +28,7 @@ public struct LLMInputViewManaged<Result: Decodable & Sendable, Preview: View>: 
         usageLimit: LLMUsageLimit? = nil,
         onUpgradeTap: (() -> Void)? = nil,
         @ViewBuilder preview: @escaping (Result) -> Preview,
+        onGetResult: ((Result) -> Void)?,
         onConfirm: @escaping (Result) -> Void
     ) {
         self.systemPrompt = systemPrompt
@@ -35,6 +37,7 @@ public struct LLMInputViewManaged<Result: Decodable & Sendable, Preview: View>: 
         self.usageLimit = usageLimit
         self.onUpgradeTap = onUpgradeTap
         self.preview = preview
+        self.onGetResult = onGetResult
         self.onConfirm = onConfirm
     }
     
@@ -51,6 +54,7 @@ public struct LLMInputViewManaged<Result: Decodable & Sendable, Preview: View>: 
                 usageLimit: usageLimit,
                 onUpgradeTap: onUpgradeTap,
                 preview: preview,
+                onGetResult: onGetResult,
                 onConfirm: onConfirm
             )
         }
@@ -164,6 +168,7 @@ private struct _MockProvider: LLMProvider {
             resultType: _PreviewResult.self,
             usageLimit: LLMUsageLimit(used: 3, total: 3, resetDate: Date().addingTimeInterval(86400)),
             preview: { result in Text(result.title) },
+            onGetResult: { _ in },
             onConfirm: { _ in }
         )
         .navigationTitle("Import")
