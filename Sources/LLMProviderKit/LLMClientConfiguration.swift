@@ -5,6 +5,7 @@
 //  Created by Татьяна Макеева on 18.06.2026.
 //
 
+import MKVNetwork
 import SwiftUI
 
 public struct LLMClientConfiguration: Codable, Identifiable, Sendable {
@@ -44,7 +45,7 @@ extension LLMClientConfiguration {
 }
 
 extension LLMClientConfiguration {
-    public func makeClientOption() -> LLMClientOption {
+    public func makeClientOption(network: any NetworkManaging) -> LLMClientOption {
         let client: LLMClient
         switch provider {
         case let .openAICompatible(
@@ -58,7 +59,8 @@ extension LLMClientConfiguration {
                     displayName: displayName,
                     baseURL: baseURL,
                     model: model,
-                    apiKey: apiKey
+                    apiKey: apiKey,
+                    network: network
                 )
             )
         }

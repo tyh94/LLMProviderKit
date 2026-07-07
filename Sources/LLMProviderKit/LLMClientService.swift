@@ -7,6 +7,7 @@
 
 import Observation
 import Foundation
+import MKVNetwork
 
 @Observable
 @MainActor
@@ -14,17 +15,23 @@ public final class LLMClientService {
     public private(set) var configurations: [LLMClientConfiguration] = []
 
     public var clients: [LLMClientOption] {
-        configurations.map {
-            LLMClientFactory.makeClient(from: $0)
+        localClients + configurations.map {
+            LLMClientFactory.makeClient(from: $0, network: network)
         }
     }
 
+    private let localClients: [LLMClientOption]
     private let store: any LLMConfigurationStore
+    private let network: any NetworkManaging
 
     public init(
-        store: any LLMConfigurationStore
+        localClients: [LLMClientOption],
+        store: any LLMConfigurationStore,
+        network: any NetworkManaging
     ) {
+        self.localClients = localClients
         self.store = store
+        self.network = network
     }
 
     public func load() async throws {
@@ -34,7 +41,6 @@ public final class LLMClientService {
     public func add(
         _ configuration: LLMClientConfiguration
     ) async throws {
-
         configurations.append(configuration)
         try await persist()
     }
@@ -49,7 +55,6 @@ public final class LLMClientService {
     public func update(
         _ configuration: LLMClientConfiguration
     ) async throws {
-
         guard let index = configurations.firstIndex(where: {
             $0.id == configuration.id
         }) else {

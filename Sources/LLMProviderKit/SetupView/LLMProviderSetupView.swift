@@ -14,8 +14,6 @@
 
 import SwiftUI
 
-// MARK: - LLMProviderSetupView
-
 /// Экран добавления/настройки провайдера.
 /// Можно встроить в любое место приложения или открыть как sheet.
 ///
@@ -31,29 +29,12 @@ public struct LLMProviderSetupView: View {
         self.onAdd = onAdd
     }
 
-    enum ProviderType: String, CaseIterable, Identifiable {
-        case openAICompatible = "OpenAI Compatible"
-
-        var id: String { rawValue }
-
-        var icon: String {
-            switch self {
-            case .openAICompatible: return "server.rack"
-            }
-        }
-
-        var description: String {
-            switch self {
-            case .openAICompatible:
-                return String(localized: "llm.provider.openai.description", bundle: .module)
-            }
-        }
-    }
+    
 
     public var body: some View {
         List {
             Section(String(localized: "llm.provider.section.title", bundle: .module)) {
-                ForEach(ProviderType.allCases) { type in
+                ForEach(LLMProviderType.allCases) { type in
                     NavigationLink(
                         destination: formView(for: type),
                         label:  {
@@ -84,7 +65,7 @@ public struct LLMProviderSetupView: View {
     }
 
     @ViewBuilder
-    private func formView(for type: ProviderType) -> some View {
+    private func formView(for type: LLMProviderType) -> some View {
         switch type {
         case .openAICompatible:
             OpenAICompatibleSetupForm(onAdd: onAdd)

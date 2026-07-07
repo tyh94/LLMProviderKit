@@ -18,12 +18,14 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/tyh94/Storage.git", from: "1.0.4"),
+        .package(url: "https://github.com/tyh94/MKVNetwork.git", from: "1.0.0"),
     ],
     targets: [
         .target(
             name: "LLMProviderKit",
             dependencies: [
-                "Storage"
+                .product(name: "Storage", package: "Storage"),
+                .product(name: "MKVNetwork", package: "MKVNetwork"),
             ],
             resources: [
                 .process("Resources")

@@ -161,7 +161,9 @@ private struct _MockProvider: LLMProvider {
     }
 }
 
-#Preview("Managed — empty") {
+import MKVNetwork
+
+#Preview {
     NavigationStack {
         LLMInputViewManaged(
             systemPrompt: "Parse and return JSON",
@@ -172,6 +174,10 @@ private struct _MockProvider: LLMProvider {
             onConfirm: { _ in }
         )
         .navigationTitle("Import")
-        .environment(LLMClientService(store: LLMConfigurationStoreMock(configs: [])))
+        .environment(LLMClientService(
+            localClients: [],
+            store: LLMConfigurationStoreMock(configs: []),
+            network: NetworkManagerMock()
+        ))
     }
 }

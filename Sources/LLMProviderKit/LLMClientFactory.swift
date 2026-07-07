@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import MKVNetwork
 
 public enum LLMClientFactory {
     public static func makeClient(
-        from config: LLMClientConfiguration
+        from config: LLMClientConfiguration,
+        network: NetworkManaging
     ) -> LLMClientOption {
         let client: LLMClient
         switch config.provider {
@@ -19,7 +21,8 @@ public enum LLMClientFactory {
                     displayName: displayName,
                     baseURL: baseURL,
                     model: model,
-                    apiKey: apiKey
+                    apiKey: apiKey,
+                    network: network
                 )
             )
         }
