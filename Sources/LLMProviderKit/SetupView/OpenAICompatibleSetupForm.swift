@@ -86,13 +86,13 @@ struct OpenAICompatibleSetupForm: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(String(localized: "llm.openai.add.button", bundle: .module)) { save() }
+                Button(String(localized: "llm.add.button", bundle: .module)) { save() }
                     .fontWeight(.semibold)
                     .disabled(baseURL.isEmpty || name.isEmpty)
             }
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button(String(localized: "llm.generic.done.button", bundle: .module)) { focused = nil }
+                Button(String(localized: "llm.done.button", bundle: .module)) { focused = nil }
             }
         }
     }

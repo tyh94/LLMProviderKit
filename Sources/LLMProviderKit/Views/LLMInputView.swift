@@ -33,6 +33,8 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
     private let preview: (Result) -> Preview
     private let onGetResult: ((Result) -> Void)?
     private let onConfirm: (Result) -> Void
+    
+    @Environment(\.dismiss) private var dismiss
 
     public init(
         clients: [LLMClientOption],
@@ -128,9 +130,14 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
             if selectedId.isEmpty { selectedId = clients[0].id }
         }
         .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(String(localized: "llm.cancel.button", bundle: .module)) {
+                   dismiss()
+                }
+            }
             ToolbarItem(placement: .confirmationAction) {
                 if case .result(let result) = state {
-                    Button(String(localized: "llm.input.confirm.button", bundle: .module)) {
+                    Button(String(localized: "llm.confirm.button", bundle: .module)) {
                         onConfirm(result)
                     }
                     .fontWeight(.semibold)
@@ -138,11 +145,12 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
             }
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
-                Button(String(localized: "llm.input.done.button", bundle: .module)) {
+                Button(String(localized: "llm.done.button", bundle: .module)) {
                     isEditing = false
                 }
             }
         }
+        .interactiveDismissDisabled()
         .animation(.default, value: stateTag)
     }
 

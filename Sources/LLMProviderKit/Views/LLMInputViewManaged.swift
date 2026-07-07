@@ -139,7 +139,7 @@ public struct LLMInputViewManaged<Result: Decodable & Sendable, Preview: View>: 
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button(String(localized: "llm.setup.cancel.button", bundle: .module)) {
+                Button(String(localized: "llm.cancel.button", bundle: .module)) {
                     showSetup = false
                 }
             }
