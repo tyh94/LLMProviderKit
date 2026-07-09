@@ -18,7 +18,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/tyh94/Storage.git", from: "1.0.4"),
-        .package(url: "https://github.com/tyh94/MKVNetwork.git", from: "1.0.0"),
+        .package(url: "https://github.com/tyh94/MKVNetwork.git", from: "1.0.1"),
     ],
     targets: [
         .target(

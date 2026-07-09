@@ -8,17 +8,49 @@
 import SwiftUI
 
 struct OpenAICompatibleSetupForm: View {
-    let onAdd: (LLMClientConfiguration) -> Void
+    let onSave: (LLMClientConfiguration) -> Void
+    private let editing: LLMClientConfiguration?
 
     @Environment(\.dismiss) private var dismiss
-    @State private var name    = ""
-    @State private var baseURL = ""
-    @State private var model   = ""
-    @State private var apiKey  = ""
+    @State private var name: String
+    @State private var baseURL: String
+    @State private var model: String
+    @State private var apiKey: String
     @State private var error: String?
+    @State private var selectedPreset: LLMPreset?
+    @State private var showInstructions = false
     @FocusState private var focused: Field?
 
     private enum Field { case name, url, model, apiKey }
+
+    /// - Parameter editing: существующая конфигурация для редактирования; `nil` — создание новой.
+    init(
+        editing: LLMClientConfiguration? = nil,
+        onSave: @escaping (LLMClientConfiguration) -> Void
+    ) {
+        self.editing = editing
+        self.onSave = onSave
+        var name = "", baseURL = "", model = "", apiKey = ""
+        if case let .openAICompatible(displayName, url, mdl, key, _, _) = editing?.provider {
+            name = displayName; baseURL = url; model = mdl; apiKey = key ?? ""
+        }
+        _name = State(initialValue: name)
+        _baseURL = State(initialValue: baseURL)
+        _model = State(initialValue: model)
+        _apiKey = State(initialValue: apiKey)
+    }
+
+    private var presets: [LLMPreset] {
+        LLMPreset.all
+    }
+    
+    private var selectedPresetInstructions: String? {
+        selectedPreset?.instructions
+    }
+    
+    private var selectedPresetWebsite: URL? {
+        selectedPreset?.websiteURL
+    }
 
     var body: some View {
         List {
@@ -55,22 +87,19 @@ struct OpenAICompatibleSetupForm: View {
                     .font(.caption)
             }
 
+            if let preset = selectedPreset {
+                Section {
+                    LLMProviderHelpView(preset: preset)
+                    .padding(.vertical, 4)
+                } header: {
+                    Text(String(localized: "llm.openai.instructions.header", bundle: .module))
+                }
+            }
+
             Section(String(localized: "llm.openai.presets.section", bundle: .module)) {
-                presetRow(
-                    String(localized: "llm.openai.preset.ollama", bundle: .module),
-                    url: "http://localhost:11434",
-                    model: "minimax-m3:cloud"
-                )
-                presetRow(
-                    String(localized: "llm.openai.preset.llamacpp", bundle: .module),
-                    url: "http://localhost:8080",
-                    model: ""
-                )
-                presetRow(
-                    String(localized: "llm.openai.preset.groq", bundle: .module),
-                    url: "https://api.groq.com/openai",
-                    model: "llama-3.1-8b-instant"
-                )
+                ForEach(presets) { preset in
+                    presetRow(preset)
+                }
             }
 
             if let error {
@@ -86,7 +115,7 @@ struct OpenAICompatibleSetupForm: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(String(localized: "llm.add.button", bundle: .module)) { save() }
+                Button(saveButtonTitle) { save() }
                     .fontWeight(.semibold)
                     .disabled(baseURL.isEmpty || name.isEmpty)
             }
@@ -95,29 +124,58 @@ struct OpenAICompatibleSetupForm: View {
                 Button(String(localized: "llm.done.button", bundle: .module)) { focused = nil }
             }
         }
-    }
-
-    private func presetRow(_ title: String, url: String, model: String) -> some View {
-        Button {
-            if name.isEmpty { self.name = title }
-            self.baseURL = url
-            self.model   = model
-        } label: {
-            HStack {
-                Text(title)
-                    .foregroundStyle(.primary)
-                Spacer()
-                Image(systemName: "arrow.up.left")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+        .onChange(of: selectedPreset) { oldValue, newValue in
+            if let preset = newValue {
+                if name.isEmpty || name == oldValue?.displayName {
+                    name = preset.displayName
+                }
+                baseURL = preset.baseURL
+                model = preset.model
+                if !preset.requiresApiKey {
+                    apiKey = ""
+                }
             }
         }
     }
 
+    private func presetRow(_ preset: LLMPreset) -> some View {
+        Button {
+            selectedPreset = preset
+        } label: {
+            HStack {
+                Image(systemName: preset.icon)
+                    .foregroundStyle(.tint)
+                    .frame(width: 24)
+                
+                Text(preset.displayName)
+                    .foregroundStyle(.primary)
+                
+                Spacer()
+                
+                if selectedPreset?.id == preset.id {
+                    Image(systemName: "checkmark")
+                        .foregroundStyle(.tint)
+                        .fontWeight(.semibold)
+                } else {
+                    Image(systemName: "arrow.up.left")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+        }
+    }
+
+    private var saveButtonTitle: String {
+        editing == nil
+            ? String(localized: "llm.add.button", bundle: .module)
+            : String(localized: "llm.save.button", bundle: .module)
+    }
+
     private func save() {
         let configuration = LLMClientConfiguration(
+            id: editing?.id ?? UUID(),
             name: name,
-            systemImage: "server.rack",
+            systemImage: selectedPreset?.icon ?? editing?.systemImage ?? "server.rack",
             provider: .openAICompatible(
                 displayName: name,
                 baseURL: baseURL,
@@ -126,13 +184,13 @@ struct OpenAICompatibleSetupForm: View {
             )
         )
 
-        onAdd(configuration)
+        onSave(configuration)
         dismiss()
     }
 }
 
 #Preview {
     NavigationStack {
-        OpenAICompatibleSetupForm(onAdd: { _ in })
+        OpenAICompatibleSetupForm(onSave: { _ in })
     }
 }

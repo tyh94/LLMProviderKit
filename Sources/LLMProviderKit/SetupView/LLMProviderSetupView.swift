@@ -5,13 +5,6 @@
 //  Created by Татьяна Макеева on 16.06.2026.
 //
 
-//
-//  LLMProviderSetupView.swift
-//  LLMProviderKit
-//
-//  Created by Татьяна Макеева on 16.06.2026.
-//
-
 import SwiftUI
 
 /// Экран добавления/настройки провайдера.
@@ -22,16 +15,14 @@ import SwiftUI
 ///     clients.append(option)
 /// }
 /// ```
-public struct LLMProviderSetupView: View {
+struct LLMProviderSetupView: View {
     private let onAdd: (LLMClientConfiguration) -> Void
 
-    public init(onAdd: @escaping (LLMClientConfiguration) -> Void) {
+    init(onAdd: @escaping (LLMClientConfiguration) -> Void) {
         self.onAdd = onAdd
     }
 
-    
-
-    public var body: some View {
+    var body: some View {
         List {
             Section(String(localized: "llm.provider.section.title", bundle: .module)) {
                 ForEach(LLMProviderType.allCases) { type in
@@ -44,7 +35,7 @@ public struct LLMProviderSetupView: View {
                                     .frame(width: 28)
                                 
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text(type.rawValue)
+                                    Text(type.title)
                                         .foregroundStyle(.primary)
                                         .fontWeight(.medium)
                                     Text(type.description)
@@ -68,7 +59,9 @@ public struct LLMProviderSetupView: View {
     private func formView(for type: LLMProviderType) -> some View {
         switch type {
         case .openAICompatible:
-            OpenAICompatibleSetupForm(onAdd: onAdd)
+            OpenAICompatibleSetupForm(onSave: onAdd)
+        case .gigaChat:
+            GigaChatSetupForm(onSave: onAdd)
         }
     }
 }

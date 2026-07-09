@@ -83,7 +83,8 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
 
     // MARK: - State
 
-    @State private var selectedId: String = ""
+    /// Запоминаем последний выбранный провайдер между запусками (id = displayName).
+    @AppStorage("llm.lastSelectedProviderId") private var selectedId: String = ""
     @State private var inputText: String = ""
     @State private var state: ViewState = .idle
     @FocusState private var isEditing: Bool
@@ -127,7 +128,10 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
         }
         .listStyle(.insetGrouped)
         .onAppear {
-            if selectedId.isEmpty { selectedId = clients[0].id }
+            // Сохранённый выбор мог устареть (провайдер удалён/переименован) — откатываемся на первый.
+            if clients.first(where: { $0.id == selectedId }) == nil {
+                selectedId = clients[0].id
+            }
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {

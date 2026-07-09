@@ -16,22 +16,28 @@ public final class LLMClientService {
 
     public var clients: [LLMClientOption] {
         localClients + configurations.map {
-            LLMClientFactory.makeClient(from: $0, network: network)
+            LLMClientFactory.makeClient(from: $0, network: network, tokenStorage: tokenStorage, logger: logger)
         }
     }
 
     private let localClients: [LLMClientOption]
     private let store: any LLMConfigurationStore
     private let network: any NetworkManaging
+    private let tokenStorage: LLMTokenFactory
+    private let logger: LLMLogger?
 
     public init(
         localClients: [LLMClientOption],
         store: any LLMConfigurationStore,
-        network: any NetworkManaging
+        network: any NetworkManaging,
+        tokenStorage: LLMTokenFactory,
+        logger: LLMLogger? = nil
     ) {
         self.localClients = localClients
         self.store = store
         self.network = network
+        self.tokenStorage = tokenStorage
+        self.logger = logger
     }
 
     public func load() async throws {

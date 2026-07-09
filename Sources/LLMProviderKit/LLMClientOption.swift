@@ -13,15 +13,18 @@ public struct LLMClientOption: Identifiable, Sendable {
     public let displayName: String
     public let systemImage: String
     public let client: LLMClient
+    public let configurationId: UUID?
 
     public init(
         client: LLMClient,
         displayName: String? = nil,
-        systemImage: String = "sparkles"
+        systemImage: String = "sparkles",
+        configurationId: UUID? = nil
     ) {
         self.client = client
         self.displayName = displayName ?? client.provider.displayName
         self.systemImage = systemImage
         self.id = self.displayName
+        self.configurationId = configurationId
     }
 }

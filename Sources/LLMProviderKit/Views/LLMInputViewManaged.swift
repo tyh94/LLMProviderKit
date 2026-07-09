@@ -102,21 +102,7 @@ public struct LLMInputViewManaged<Result: Decodable & Sendable, Preview: View>: 
             if !llmService.clients.isEmpty {
                 Section(String(localized: "llm.providers.active.section", bundle: .module)) {
                     ForEach(llmService.clients) { option in
-                        HStack(spacing: 12) {
-                            Image(systemName: option.systemImage)
-                                .foregroundStyle(.tint)
-                                .frame(width: 24)
-                            Text(option.displayName)
-                            Spacer()
-                        }
-                    }
-                    .onDelete { offsets in
-                        Task {
-                            for index in offsets {
-                                let config = llmService.configurations[index]
-                                try? await llmService.remove(id: config.id)
-                            }
-                        }
+                        providerRow(option)
                     }
                 }
             }
@@ -143,6 +129,65 @@ public struct LLMInputViewManaged<Result: Decodable & Sendable, Preview: View>: 
                     showSetup = false
                 }
             }
+        }
+    }
+
+    /// Строка провайдера. Настраиваемые (со своим `configurationId`) открываются на редактирование
+    /// и удаляются свайпом; встроенные (локальные) — только помечены замком.
+    @ViewBuilder
+    private func providerRow(_ option: LLMClientOption) -> some View {
+        if let config = configuration(for: option) {
+            NavigationLink {
+                editForm(for: config)
+            } label: {
+                providerLabel(option, editable: true)
+            }
+            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                Button(role: .destructive) {
+                    Task { try? await llmService.remove(id: config.id) }
+                } label: {
+                    Label(String(localized: "llm.delete.button", bundle: .module), systemImage: "trash")
+                }
+            }
+        } else {
+            providerLabel(option, editable: false)
+        }
+    }
+
+    private func providerLabel(_ option: LLMClientOption, editable: Bool) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: option.systemImage)
+                .foregroundStyle(.tint)
+                .frame(width: 24)
+            Text(option.displayName)
+            Spacer()
+            if !editable {
+                Image(systemName: "lock.fill")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func configuration(for option: LLMClientOption) -> LLMClientConfiguration? {
+        guard let id = option.configurationId else { return nil }
+        return llmService.configurations.first { $0.id == id }
+    }
+
+    /// Форма редактирования для конкретного провайдера, предзаполненная и сохраняющая через `update`.
+    @ViewBuilder
+    private func editForm(for config: LLMClientConfiguration) -> some View {
+        let onSave: (LLMClientConfiguration) -> Void = { updated in
+            Task {
+                try? await llmService.update(updated)
+                showSetup = false
+            }
+        }
+        switch config.provider {
+        case .openAICompatible:
+            OpenAICompatibleSetupForm(editing: config, onSave: onSave)
+        case .gigaChat:
+            GigaChatSetupForm(editing: config, onSave: onSave)
         }
     }
 }
@@ -177,7 +222,8 @@ import MKVNetwork
         .environment(LLMClientService(
             localClients: [],
             store: LLMConfigurationStoreMock(configs: []),
-            network: NetworkManagerMock()
+            network: NetworkManagerMock(),
+            tokenStorage: .init(constant: TokenStorageMock())
         ))
     }
 }

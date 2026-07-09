@@ -13,7 +13,7 @@ public final class KeyValueStorageLLMStore: LLMConfigurationStore {
     private let key: String
 
     public init(
-        storage: KeyValueStorage = UserDefaultsStorage(),
+        storage: KeyValueStorage,
         key: String = "llm.clients"
     ) {
         self.storage = storage

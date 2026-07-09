@@ -69,6 +69,23 @@
         }
       }
     },
+    "llm.delete.button" : {
+      "comment" : "Delete swipe action for an LLM provider.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить"
+          }
+        }
+      }
+    },
     "llm.done.button" : {
       "localizations" : {
         "en" : {
@@ -129,6 +146,159 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Не удалось разобрать"
+          }
+        }
+      }
+    },
+    "llm.gigachat.authkey.footer" : {
+      "comment" : "Footer explaining where to get the GigaChat authorization key.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Authorization Key (Client Secret) from your project in Sber developers portal. Stored only on your device."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ключ авторизации (Authorization Key) из вашего проекта на портале разработчиков Сбера. Хранится только на вашем устройстве."
+          }
+        }
+      }
+    },
+    "llm.gigachat.authkey.label" : {
+      "comment" : "Header of the authorization key section in the GigaChat setup form.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authorization Key"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ключ авторизации"
+          }
+        }
+      }
+    },
+    "llm.gigachat.authkey.placeholder" : {
+      "comment" : "Placeholder for the authorization key field in the GigaChat setup form.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste the authorization key"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вставьте ключ авторизации"
+          }
+        }
+      }
+    },
+    "llm.gigachat.credentials.header" : {
+      "comment" : "Header of the name section in the GigaChat setup form.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Provider name"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Название провайдера"
+          }
+        }
+      }
+    },
+    "llm.gigachat.navigation.title" : {
+      "comment" : "Navigation title of the GigaChat setup form.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GigaChat"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GigaChat"
+          }
+        }
+      }
+    },
+    "llm.gigachat.scope.business" : {
+      "comment" : "GigaChat scope option for pay-as-you-go business.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Business (pay-as-you-go)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бизнес (по факту)"
+          }
+        }
+      }
+    },
+    "llm.gigachat.scope.corporate" : {
+      "comment" : "GigaChat scope option for corporate access.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corporate"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Корпоративный"
+          }
+        }
+      }
+    },
+    "llm.gigachat.scope.label" : {
+      "comment" : "Label for the scope picker in the GigaChat setup form.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access type"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тип доступа"
+          }
+        }
+      }
+    },
+    "llm.gigachat.scope.personal" : {
+      "comment" : "GigaChat scope option for individuals.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Individuals"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Физические лица"
           }
         }
       }
@@ -251,6 +421,24 @@
         }
       }
     },
+    "llm.openai.instructions.header" : {
+      "comment" : "A heading for the instructions displayed in the OpenAI-compatible LLM setup form.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instructions"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Инструкции"
+          }
+        }
+      }
+    },
     "llm.openai.model.label" : {
       "localizations" : {
         "en" : {
@@ -333,6 +521,94 @@
         }
       }
     },
+    "llm.openai.preset.claude" : {
+      "comment" : "Display name for the Claude LLM preset.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude (Anthropic)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claude (Anthropic)"
+          }
+        }
+      }
+    },
+    "llm.openai.preset.claude.instructions" : {
+      "comment" : "Instructions for using the Claude LLM.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Go to Anthropic Console\n2. Create a new API key\n3. Copy the key and paste it into the field above\n\nNote: The API key is stored only locally on your device and is never sent to our servers."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Перейдите в консоль Anthropic\n2. Создайте новый API ключ\n3. Скопируйте ключ и вставьте его в поле выше\n\nВнимание: API ключ хранится только локально на вашем устройстве и никогда не передаётся на наши сервера."
+          }
+        }
+      }
+    },
+    "llm.openai.preset.extra.note" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can create multiple spaces for different environments (dev, test, prod)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вы можете создать несколько пространств для разных сред (dev, test, prod)"
+          }
+        }
+      }
+    },
+    "llm.openai.preset.get.key" : {
+      "comment" : "A button that opens a website.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get API key →"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Получить API ключ →"
+          }
+        }
+      }
+    },
+    "llm.openai.preset.gigachat.instructions" : {
+      "comment" : "Instructions for using the \"GigaChat\" LLM preset.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Go to Sber developers portal\n2. Create a project and get an API key\n3. Copy the key and paste it into the field above\n\nNote: GigaChat requires authentication with a bearer token. The API key is stored only locally on your device and is never sent to our servers."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Перейдите на портал разработчиков Сбера\n2. Создайте проект и получите API ключ\n3. Скопируйте ключ и вставьте его в поле выше\n\nВнимание: GigaChat требует авторизации с помощью bearer токена. API ключ хранится только локально на вашем устройстве и никогда не передаётся на наши сервера."
+          }
+        }
+      }
+    },
     "llm.openai.preset.groq" : {
       "localizations" : {
         "en" : {
@@ -345,6 +621,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Groq (облако)"
+          }
+        }
+      }
+    },
+    "llm.openai.preset.groq.instructions" : {
+      "comment" : "Instructions for using the \"llm.openai.preset.groq\" preset.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Sign up at Groq\n2. Go to developer console\n3. Create an API key\n\nGroq provides free requests for developers."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Зарегистрируйтесь на Groq\n2. Перейдите в консоль разработчика\n3. Создайте API ключ\n\nGroq предоставляет бесплатные запросы для разработчиков."
           }
         }
       }
@@ -365,6 +659,24 @@
         }
       }
     },
+    "llm.openai.preset.llamacpp.instructions" : {
+      "comment" : "Instructions for using the LLM with the \"llama.cpp\" preset.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Install llama.cpp\n2. Start the server: ./server -m model.gguf\n3. Specify the port (default is 8080)\n\nAPI key is not required for local usage."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Установите llama.cpp\n2. Запустите сервер: ./server -m model.gguf\n3. Укажите порт (по умолчанию 8080)\n\nAPI ключ не требуется для локальной работы."
+          }
+        }
+      }
+    },
     "llm.openai.preset.ollama" : {
       "localizations" : {
         "en" : {
@@ -377,6 +689,60 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ollama (локальный)"
+          }
+        }
+      }
+    },
+    "llm.openai.preset.ollama.instructions" : {
+      "comment" : "Instructions for using the \"OpenAI OLLAMA\" LLM.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Install Ollama from the official website\n2. Start the Ollama server\n3. Download the model using: ollama pull minimax-m3:cloud\n\nAPI key is not required for local usage."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Установите Ollama с официального сайта\n2. Запустите Ollama сервер\n3. Загрузите модель командой: ollama pull minimax-m3:cloud\n\nДля локальной работы API ключ не требуется."
+          }
+        }
+      }
+    },
+    "llm.openai.preset.openai" : {
+      "comment" : "Name of the OpenAI LLM preset.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI"
+          }
+        }
+      }
+    },
+    "llm.openai.preset.openai.instructions" : {
+      "comment" : "Instructions for using the OpenAI LLM.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Go to OpenAI platform\n2. Create a new API key\n3. Copy the key and paste it into the field above\n\nNote: The API key is stored only locally on your device and is never sent to our servers."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. Перейдите на платформу OpenAI\n2. Создайте новый API ключ\n3. Скопируйте ключ и вставьте его в поле выше\n\nВнимание: API ключ хранится только локально на вашем устройстве и никогда не передаётся на наши сервера."
           }
         }
       }
@@ -402,13 +768,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "API Key is not required for Ollama and llama.cpp. Required for OpenAI, Groq, etc."
+            "value" : "API Key is not required for Ollama and llama.cpp. Required for OpenAI, Groq and others."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "API Key не нужен для Ollama и llama.cpp. Нужен для OpenAI, Groq и т.д."
+            "value" : "API Key не нужен для Ollama и llama.cpp. Нужен для OpenAI, Groq, GigaChat и других."
           }
         }
       }
@@ -465,6 +831,42 @@
         }
       }
     },
+    "llm.provider.gigachat.description" : {
+      "comment" : "Description of the GigaChat LLM provider.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GigaChat from Sberbank. Requires a project and space in Sber developers portal."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GigaChat от Сбербанка. Требует создания проекта и пространства на портале разработчиков Сбера."
+          }
+        }
+      }
+    },
+    "llm.provider.gigachat.title" : {
+      "comment" : "Title of the GigaChat LLM provider.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GigaChat"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GigaChat"
+          }
+        }
+      }
+    },
     "llm.provider.navigation.title" : {
       "localizations" : {
         "en" : {
@@ -499,9 +901,23 @@
         }
       }
     },
-    "llm.provider.openai.instructions" : {
-      "comment" : "Instructions for using an OpenAI-compatible LLM provider.",
-      "isCommentAutoGenerated" : true
+    "llm.provider.openai.title" : {
+      "comment" : "Title of the OpenAI LLM provider.",
+      "isCommentAutoGenerated" : true,
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OpenAI Compatible"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Совместимый с OpenAI"
+          }
+        }
+      }
     },
     "llm.provider.section.title" : {
       "localizations" : {
@@ -595,6 +1011,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Провайдеры"
+          }
+        }
+      }
+    },
+    "llm.save.button" : {
+      "comment" : "Save button title when editing an LLM provider.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранить"
           }
         }
       }
@@ -696,10 +1129,6 @@
           }
         }
       }
-    },
-    "Получение API ключа" : {
-      "comment" : "A section title for obtaining an API key.",
-      "isCommentAutoGenerated" : true
     }
   },
   "version" : "1.1"

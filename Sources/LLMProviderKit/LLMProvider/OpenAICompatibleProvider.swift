@@ -9,44 +9,75 @@ import Foundation
 import MKVNetwork
 
 /// Работает с любым OpenAI-compatible сервером:
-/// Ollama, llama.cpp, LM Studio, OpenAI, Groq, Together AI и т.д.
-public actor OpenAICompatibleProvider: LLMProvider {
+/// Ollama, llama.cpp, LM Studio, OpenAI, Groq, Together AI, GigaChat и т.д.
+actor OpenAICompatibleProvider: LLMProvider {
     public let displayName: String
     private let baseURL: String
     private let model: String
     private let apiKey: String?
     private let network: NetworkManaging
+    private let additionalBodyParams: LLMProviderBodyParams
+    private let customHeaders: [HTTPHeader]
+    private let logger: LLMLogger?
 
     /// - Parameters:
     ///   - displayName: Отображаемое имя (напр. "Ollama (локальный)")
     ///   - baseURL: Адрес сервера без trailing slash (напр. "http://192.168.1.5:11434")
     ///   - model: Имя модели (напр. "llama3.2", "mistral", "gpt-4o")
     ///   - apiKey: API-ключ (nil для локальных серверов без авторизации)
-    ///   - timeoutInterval: Таймаут запроса в секундах (по умолчанию 60)
     ///   - network: Сетевой менеджер для выполнения запросов
-    public init(
+    ///   - additionalBodyParams: Дополнительные параметры тела запроса
+    ///   - customHeaders: Кастомные заголовки
+    init(
         displayName: String = "OpenAI Compatible",
         baseURL: String,
         model: String,
         apiKey: String? = nil,
-        network: NetworkManaging
+        network: NetworkManaging,
+        additionalBodyParams: LLMProviderBodyParams = LLMProviderBodyParams(),
+        customHeaders: [HTTPHeader] = [],
+        logger: LLMLogger?
     ) {
         self.displayName = displayName
         self.baseURL = baseURL.trimmingCharacters(in: .init(charactersIn: "/"))
         self.model = model
         self.apiKey = apiKey
         self.network = network
+        self.additionalBodyParams = additionalBodyParams
+        self.customHeaders = customHeaders
+        self.logger = logger
+    }
+    
+    /// Удобный инициализатор из пресета
+    init(
+        preset: LLMPreset,
+        apiKey: String? = nil,
+        network: NetworkManaging,
+        logger: LLMLogger?
+    ) {
+        self.init(
+            displayName: preset.displayName,
+            baseURL: preset.baseURL,
+            model: preset.model,
+            apiKey: apiKey,
+            network: network,
+            additionalBodyParams: preset.additionalBodyParams,
+            customHeaders: preset.customHeaders,
+            logger: logger
+        )
     }
 
     // MARK: - LLMProvider
 
-    public func complete<T: Decodable & Sendable>(
+    func complete<T: Decodable & Sendable>(
         system: String,
         user: String,
         as type: T.Type
     ) async throws -> T {
         let url = try chatCompletionsURL()
-        let body: [String: Any] = [
+        
+        // Формируем базовое тело запроса
+        var body: [String: Any] = [
             "model": model,
             "temperature": 0.1,
             "messages": [
@@ -54,6 +85,12 @@ public actor OpenAICompatibleProvider: LLMProvider {
                 ["role": "user",   "content": user]
             ]
         ]
+        
+        // Добавляем дополнительные параметры из LLMProviderBodyParams
+        let additionalParams = additionalBodyParams.toDictionary()
+        for (key, value) in additionalParams {
+            body[key] = value
+        }
 
         var headers: [HTTPHeader] = [
             .contentType("application/json")
@@ -62,6 +99,9 @@ public actor OpenAICompatibleProvider: LLMProvider {
         if let key = apiKey {
             headers.append(.authorization(bearerToken: key))
         }
+        
+        // Добавляем кастомные заголовки
+        headers.append(contentsOf: customHeaders)
 
         let jsonData = try JSONSerialization.data(withJSONObject: body)
         let parameters = Request.Parameters.body(jsonData)
@@ -106,82 +146,5 @@ public actor OpenAICompatibleProvider: LLMProvider {
         } catch {
             throw LLMError.jsonDecodingFailed(json)
         }
-    }
-}
-
-// MARK: - Convenience initialisers for popular services
-
-extension OpenAICompatibleProvider {
-    /// OpenAI
-    public static func openAI(
-        apiKey: String,
-        model: String = "gpt-4o-mini",
-        network: NetworkManaging = NetworkManager()
-    ) -> OpenAICompatibleProvider {
-        OpenAICompatibleProvider(
-            displayName: "OpenAI",
-            baseURL: "https://api.openai.com",
-            model: model,
-            apiKey: apiKey,
-            network: network
-        )
-    }
-
-    /// Groq (быстрый, бесплатный тариф)
-    public static func groq(
-        apiKey: String,
-        model: String = "llama-3.1-8b-instant",
-        network: NetworkManaging = NetworkManager()
-    ) -> OpenAICompatibleProvider {
-        OpenAICompatibleProvider(
-            displayName: "Groq",
-            baseURL: "https://api.groq.com/openai",
-            model: model,
-            apiKey: apiKey,
-            network: network
-        )
-    }
-
-    /// Ollama (локальный)
-    public static func ollama(
-        host: String = "http://localhost:11434",
-        model: String,
-        network: NetworkManaging = NetworkManager()
-    ) -> OpenAICompatibleProvider {
-        OpenAICompatibleProvider(
-            displayName: "Ollama",
-            baseURL: host,
-            model: model,
-            network: network
-        )
-    }
-
-    /// llama.cpp server (локальный)
-    public static func llamaCpp(
-        host: String = "http://localhost:8080",
-        model: String = "",
-        network: NetworkManaging = NetworkManager()
-    ) -> OpenAICompatibleProvider {
-        OpenAICompatibleProvider(
-            displayName: "llama.cpp",
-            baseURL: host,
-            model: model,
-            network: network
-        )
-    }
-    
-    /// Claude (Anthropic)
-    public static func claude(
-        apiKey: String,
-        model: String = "claude-sonnet-4-0",
-        network: NetworkManaging = NetworkManager()
-    ) -> OpenAICompatibleProvider {
-        OpenAICompatibleProvider(
-            displayName: "Claude",
-            baseURL: "https://api.anthropic.com/v1",
-            model: model,
-            apiKey: apiKey,
-            network: network
-        )
     }
 }
