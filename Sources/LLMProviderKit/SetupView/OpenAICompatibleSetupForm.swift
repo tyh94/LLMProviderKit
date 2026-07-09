@@ -140,7 +140,9 @@ struct OpenAICompatibleSetupForm: View {
 
     private func presetRow(_ preset: LLMPreset) -> some View {
         Button {
-            selectedPreset = preset
+            withAnimation(.easeInOut(duration: 0.25)) {
+                selectedPreset = preset
+            }
         } label: {
             HStack {
                 Image(systemName: preset.icon)
