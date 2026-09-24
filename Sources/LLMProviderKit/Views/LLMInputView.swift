@@ -30,6 +30,8 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
     private let resultType: Result.Type
     private let usageLimit: LLMUsageLimit?
     private let onUpgradeTap: (() -> Void)?
+    /// Отправка текста разработчику: `error` — сообщение об ошибке, `nil` — результат разобран неправильно.
+    private let onReport: ((_ input: String, _ error: String?) -> Void)?
     private let preview: (Result) -> Preview
     private let onGetResult: ((Result) -> Void)?
     private let onConfirm: (Result) -> Void
@@ -43,6 +45,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
         resultType: Result.Type,
         usageLimit: LLMUsageLimit? = nil,
         onUpgradeTap: (() -> Void)? = nil,
+        onReport: ((_ input: String, _ error: String?) -> Void)? = nil,
         @ViewBuilder preview: @escaping (Result) -> Preview,
         onGetResult: ((Result) -> Void)?,
         onConfirm: @escaping (Result) -> Void
@@ -53,6 +56,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
         self.resultType = resultType
         self.usageLimit = usageLimit
         self.onUpgradeTap = onUpgradeTap
+        self.onReport = onReport
         self.preview = preview
         self.onGetResult = onGetResult
         self.onConfirm = onConfirm
@@ -347,6 +351,14 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
     private func previewSection(_ result: Result) -> some View {
         Section(String(localized: "llm.input.preview.section", bundle: .module)) {
             preview(result)
+            if let onReport {
+                Button {
+                    onReport(inputText, nil)
+                } label: {
+                    Label(String(localized: "llm.report.wrong", bundle: .module), systemImage: "exclamationmark.bubble")
+                        .font(.subheadline)
+                }
+            }
         }
     }
 
@@ -379,6 +391,14 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
                     } else {
                         Button(String(localized: "llm.error.retry.button", bundle: .module)) {
                             parse()
+                        }
+                        .font(.caption)
+                        .padding(.top, 2)
+                    }
+
+                    if let onReport {
+                        Button(String(localized: "llm.report.failed", bundle: .module)) {
+                            onReport(inputText, message)
                         }
                         .font(.caption)
                         .padding(.top, 2)
