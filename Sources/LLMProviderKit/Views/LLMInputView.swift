@@ -104,6 +104,10 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
         clients.first { $0.id == selectedId } ?? clients[0]
     }
 
+    private var activeLimit: LLMUsageLimit? {
+        selectedClient.usageLimit ?? usageLimit
+    }
+
     // MARK: - Body
 
     public var body: some View {
@@ -113,7 +117,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
             }
             
             // Секция с лимитами
-            if let limit = usageLimit {
+            if let limit = activeLimit {
                 usageLimitSection(limit)
             }
 
@@ -269,8 +273,15 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
                             .foregroundStyle(option.id == selectedId ? Color.accentColor : Color.secondary)
                             .frame(width: 24)
 
-                        Text(option.displayName)
-                            .foregroundStyle(.primary)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(option.displayName)
+                                .foregroundStyle(.primary)
+                            if let subtitle = option.subtitle {
+                                Text(subtitle)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
 
                         Spacer()
 
@@ -317,7 +328,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
             .disabled(
                 inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
                 isLoading ||
-                !(usageLimit?.hasRemaining ?? true) // Блокируем если лимит исчерпан
+                !(activeLimit?.hasRemaining ?? true) // Блокируем если лимит исчерпан
             )
             .buttonStyle(.borderedProminent)
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
@@ -351,6 +362,20 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
     private func previewSection(_ result: Result) -> some View {
         Section(String(localized: "llm.input.preview.section", bundle: .module)) {
             preview(result)
+            if let refinement = refinementClient {
+                Button {
+                    selectedId = refinement.id
+                    parse()
+                } label: {
+                    Label(
+                        String(localized: "llm.refine.with", bundle: .module)
+                            .replacingOccurrences(of: "%@", with: refinement.displayName),
+                        systemImage: refinement.systemImage
+                    )
+                    .font(.subheadline)
+                }
+                .disabled(!(refinement.usageLimit?.hasRemaining ?? true))
+            }
             if let onReport {
                 Button {
                     onReport(inputText, nil)
@@ -412,7 +437,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
     // MARK: - Action
 
     private func parse() {
-        guard usageLimit?.hasRemaining ?? true else {
+        guard activeLimit?.hasRemaining ?? true else {
             state = .error(String(localized: "llm.usage.limit.exceeded", bundle: .module))
             return
         }
@@ -422,7 +447,8 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
         guard !text.isEmpty else { return }
 
         state = .loading
-        let client = selectedClient.client
+        let option = selectedClient
+        let client = option.client
 
         Task {
             do {
@@ -431,6 +457,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
                     user: text,
                     as: resultType
                 )
+                option.recordUsage()
                 state = .result(result)
                 onGetResult?(result)
             } catch {
@@ -453,6 +480,10 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
         case .result:  return "result"
         case .error:   return "error"
         }
+    }
+
+    private var refinementClient: LLMClientOption? {
+        clients.first { $0.offersRefinement && $0.id != selectedId }
     }
 
     private var nextClient: LLMClientOption? {

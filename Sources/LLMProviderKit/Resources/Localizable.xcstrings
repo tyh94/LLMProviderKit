@@ -1015,6 +1015,22 @@
         }
       }
     },
+    "llm.refine.with" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Re-parse with %@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Распознать через %@"
+          }
+        }
+      }
+    },
     "llm.save.button" : {
       "comment" : "Save button title when editing an LLM provider.",
       "localizations" : {
