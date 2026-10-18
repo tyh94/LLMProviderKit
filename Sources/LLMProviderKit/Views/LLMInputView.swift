@@ -30,8 +30,8 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
     private let resultType: Result.Type
     private let usageLimit: LLMUsageLimit?
     private let onUpgradeTap: (() -> Void)?
-    /// Отправка текста разработчику: `error` — сообщение об ошибке, `nil` — результат разобран неправильно.
-    private let onReport: ((_ input: String, _ error: String?) -> Void)?
+    /// Отправка текста разработчику вместе с результатом или ошибкой.
+    private let onReport: ((LLMInputReport<Result>) -> Void)?
     private let preview: (Result) -> Preview
     private let onGetResult: ((Result) -> Void)?
     private let onConfirm: (Result) -> Void
@@ -45,7 +45,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
         resultType: Result.Type,
         usageLimit: LLMUsageLimit? = nil,
         onUpgradeTap: (() -> Void)? = nil,
-        onReport: ((_ input: String, _ error: String?) -> Void)? = nil,
+        onReport: ((LLMInputReport<Result>) -> Void)? = nil,
         @ViewBuilder preview: @escaping (Result) -> Preview,
         onGetResult: ((Result) -> Void)?,
         onConfirm: @escaping (Result) -> Void
@@ -275,11 +275,11 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
 
                         VStack(alignment: .leading, spacing: 2) {
                             Text(option.displayName)
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(option.id == selectedId ? Color.accentColor : Color.secondary)
                             if let subtitle = option.subtitle {
                                 Text(subtitle)
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(option.id == selectedId ? Color.accentColor : Color.secondary)
                             }
                         }
 
@@ -331,7 +331,8 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
                 !(activeLimit?.hasRemaining ?? true) // Блокируем если лимит исчерпан
             )
             .buttonStyle(.borderedProminent)
-            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 12, trailing: 16))
+            .controlSize(.large)
+            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
         }
     }
 
@@ -378,7 +379,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
             }
             if let onReport {
                 Button {
-                    onReport(inputText, nil)
+                    onReport(LLMInputReport(input: inputText, provider: selectedClient.displayName, outcome: .wrong(result)))
                 } label: {
                     Label(String(localized: "llm.report.wrong", bundle: .module), systemImage: "exclamationmark.bubble")
                         .font(.subheadline)
@@ -423,7 +424,7 @@ public struct LLMInputView<Result: Decodable & Sendable, Preview: View>: View {
 
                     if let onReport {
                         Button(String(localized: "llm.report.failed", bundle: .module)) {
-                            onReport(inputText, message)
+                            onReport(LLMInputReport(input: inputText, provider: selectedClient.displayName, outcome: .failed(message)))
                         }
                         .font(.caption)
                         .padding(.top, 2)
